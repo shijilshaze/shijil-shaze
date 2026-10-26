@@ -1,0 +1,297 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;0,800;0,900;1,900&display=swap');
+
+/* ==========================================================
+   TECHNICAL SKILLS SECTION STYLES
+   ========================================================== */
+
+.skills-section {
+  position: relative;
+  background-color: #FFFFFF;
+  min-height: 100vh;
+  padding: 50px 20px 80px;
+  overflow: hidden;
+  font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  box-sizing: border-box;
+}
+
+/* --- Spider-Web Background Layer --- */
+.skills-web-decoration {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 750px;
+  height: 750px;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* --- Section Header --- */
+.skills-header {
+  text-align: center;
+  position: relative;
+  z-index: 3;
+  margin-bottom: 35px;
+  animation: fadeInDown 0.8s ease-out forwards;
+}
+
+.skills-subtitle {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  color: #A90018;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.skills-title {
+  font-size: clamp(38px, 4.8vw, 56px);
+  font-style: italic;
+  font-weight: 900;
+  color: #111827;
+  text-transform: uppercase;
+  line-height: 1;
+  letter-spacing: -0.5px;
+  text-shadow: 3px 4px 0 rgba(169, 0, 24, 0.22);
+  margin: 0;
+}
+
+.skills-title-underline {
+  width: 42px;
+  height: 3px;
+  background-color: #A90018;
+  margin: 10px auto 0;
+  border-radius: 2px;
+}
+
+/* --- Centered Main Container --- */
+.skills-container {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+  z-index: 3;
+}
+
+.skills-grid-wrapper {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(280px, 410px));
+  gap: 14px 20px;
+  justify-content: center;
+}
+
+.skills-column {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* --- Skill Cards --- */
+.skill-card {
+  position: relative;
+  background-color: #FFFFFF;
+  border: 1px solid #EAEAEA;
+  border-radius: 14px;
+  height: 72px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.skill-card:hover {
+  border-color: #A90018;
+  box-shadow: 0 6px 18px rgba(169, 0, 24, 0.15);
+}
+
+/* Red Horizontal Wipe Fill Effect */
+.skill-card-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #A90018;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 1;
+}
+
+.skill-card:hover .skill-card-fill {
+  transform: scaleX(1);
+}
+
+/* Card Content Layering & Typography */
+.skill-card-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.skill-info-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.skill-card-indicator {
+  width: 8px;
+  height: 8px;
+  background-color: #A90018;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background-color 0.3s ease;
+}
+
+.skill-card:hover .skill-card-indicator {
+  background-color: #FFFFFF;
+}
+
+.skill-text-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.skill-card-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: 0.2px;
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.skill-card:hover .skill-card-name {
+  color: #FFFFFF;
+}
+
+.skill-card-category {
+  font-size: 10px;
+  font-weight: 700;
+  color: #9CA3AF;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+}
+
+.skill-card:hover .skill-card-category {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+/* Proficiency Badge (Hover: Black Pill with White Text) */
+.skill-card-level {
+  background-color: #F8F9FA;
+  border: 1px solid #EDEDED;
+  color: #111827;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 5px 13px;
+  border-radius: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.skill-card:hover .skill-card-level {
+  background-color: #000000;
+  border-color: #000000;
+  color: #FFFFFF;
+}
+
+/* --- Spider-Man Hanging in Upper Right --- */
+.skills-spiderman-wrapper {
+  position: absolute;
+  top: -300px;
+  right: -55px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.spiderman-thread {
+  width: 1.5px;
+  height: 180px;
+  background-color: #D1D5DB;
+}
+
+.skills-spiderman {
+  width: 180px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.12));
+  animation: subtleSwing 4s ease-in-out infinite alternate;
+  transform-origin: top center;
+  margin-top: -1px;
+}
+
+/* --- Animations --- */
+@keyframes subtleSwing {
+  0% {
+    transform: rotate(-1.5deg);
+  }
+  100% {
+    transform: rotate(2deg);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Responsive Layout --- */
+@media screen and (max-width: 1180px) {
+  .skills-spiderman-wrapper {
+    right: 0px;
+  }
+  .skills-spiderman {
+    width: 150px;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .skills-spiderman-wrapper {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .skills-section {
+    padding: 40px 15px 60px;
+  }
+
+  .skills-grid-wrapper {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .skill-card {
+    height: 68px;
+    padding: 0 14px;
+  }
+
+  .skill-card-name {
+    font-size: 14px;
+  }
+}

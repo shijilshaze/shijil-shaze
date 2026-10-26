@@ -1,0 +1,658 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,900&family=Outfit:wght@800;900&display=swap");
+
+:root {
+  --white: #ffffff;
+  --ink: #050505;
+  --red: #d71920;
+  --btn-red: #a50f16;
+  --red-dark: #9e0f15;
+  --navy: #101323;
+  --gray: #e6e6e8;
+  --web-color: #6e6e6e;
+  --font-display: "Lato", "Segoe UI", Arial, sans-serif;
+  --font-body: "Lato", "Segoe UI", Arial, sans-serif;
+  /* Name font: Outfit Black — same heavy style as the "MUHAMMED SHIJIL NK" title. */
+  --font-name: "Outfit", "Segoe UI", Arial, sans-serif;
+  --name-ink: #0f172a;   /* navy-black text */
+  --name-shadow: #f4a6b5; /* soft pink offset shadow */
+  --nav-h: clamp(64px, 5.4vw, 104px);
+  --pad-x: clamp(24px, 6.6vw, 140px);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--white);
+  color: var(--ink);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+/* ---------------------------------- NAVBAR ---------------------------------- */
+.nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 clamp(24px, 11.5vw, 260px);
+  background: transparent;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.logo__mark {
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.logo:hover .logo__mark {
+  transform: rotate(-12deg) scale(1.08);
+}
+
+.logo__text {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.05rem;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: clamp(22px, 2.3vw, 48px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav__link {
+  position: relative;
+  display: inline-block;
+  padding: 6px 0;
+  font-size: clamp(0.72rem, 0.82vw, 0.98rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #707070;
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.nav__link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--red);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.nav__link:hover,
+.nav__link:focus-visible {
+  color: var(--red);
+}
+
+.nav__link:hover::after,
+.nav__link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.nav__link:focus-visible,
+.logo:focus-visible,
+.btn:focus-visible,
+.nav__toggle:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 4px;
+}
+
+.nav__toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+/* ----------------------------------- HERO ----------------------------------- */
+.hero {
+  --mx: 0; /* mouse x, -1 .. 1 (eased) */
+  --my: 0; /* mouse y, -1 .. 1 (eased) */
+  --sy: 0; /* scroll offset in px (eased) */
+  --cx: 0; /* reveal centre x, px inside the character image */
+  --cy: 0; /* reveal centre y, px inside the character image */
+  --rv: 0; /* reveal strength 0..1 (0 = Spider-Man fully hidden) */
+  --reveal-r: clamp(120px, 11vw, 230px); /* reveal radius */
+  --reveal-opacity: 0.5; /* Spider-Man strength: lower = your face is clearer (0.3 - 0.7) */
+
+  /* ---- Size / position of the revealed image (the layer shown inside the circle) ----
+     Make it bigger or smaller, and slide it, until it lines up with the base image. */
+  --face-scale-x: 1.7; /* width  : 1 = original, 1.5 = 50% wider  */
+  --face-scale-y: 1.7; /* height : 1 = original, 1.5 = 50% taller */
+  --face-x: 2%;        /* move left (-) / right (+)  */
+  --face-y: -1%;      /* move up (-) / down (+)     */
+  --face-origin: 52% 50%; /* point the image grows from (roughly the centre of the face) */
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 620px;
+  overflow: hidden;
+  background: var(--white);
+  isolation: isolate;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hero {
+    cursor: crosshair;
+  }
+}
+
+/* ------------------------------- SPIDER WEBS -------------------------------- */
+.webs {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  color: var(--web-color);
+}
+
+/* Outer wrapper = mouse / scroll parallax. Inner svg = idle float animation. */
+.web-wrap {
+  position: absolute;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.web {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  opacity: 0.85;
+  will-change: transform;
+}
+
+.web-wrap--tl {
+  width: clamp(240px, 22vw, 460px);
+  left: -5vw;
+  top: -9vh;
+  transform: translate3d(calc(var(--mx) * 26px), calc(var(--my) * 18px - var(--sy) * 0.08px), 0)
+    rotate(calc(var(--sy) * 0.03deg));
+}
+.web-wrap--tl .web {
+  animation: web-float-a 11s ease-in-out infinite;
+}
+
+.web-wrap--br {
+  width: clamp(260px, 27vw, 540px);
+  right: -6vw;
+  bottom: -12vh;
+  transform: translate3d(calc(var(--mx) * -34px), calc(var(--my) * -24px - var(--sy) * 0.14px), 0)
+    rotate(calc(var(--sy) * -0.04deg));
+}
+.web-wrap--br .web {
+  animation: web-float-b 14s ease-in-out infinite;
+}
+
+.web-wrap--r {
+  width: clamp(110px, 10vw, 200px);
+  right: 2vw;
+  top: 22vh;
+  opacity: 0.4;
+  transform: translate3d(calc(var(--mx) * -16px), calc(var(--my) * 12px), 0);
+}
+.web-wrap--r .web {
+  animation: web-float-c 9s ease-in-out infinite;
+}
+
+@keyframes web-float-a {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-3deg) scale(1); }
+  50%      { transform: translate3d(14px, 22px, 0) rotate(5deg) scale(1.05); }
+}
+
+@keyframes web-float-b {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(6deg) scale(1); }
+  50%      { transform: translate3d(-18px, -46px, 0) rotate(-6deg) scale(1.07); }
+}
+
+@keyframes web-float-c {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-10deg); }
+  50%      { transform: translate3d(-8px, 14px, 0) rotate(8deg); }
+}
+
+/* -------------------------------- CHARACTER --------------------------------- */
+/* Tune the size here: --char-w / --char-h */
+.character {
+  --char-w: min(80vw, 1500px);
+  --char-h: 108vh;
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  bottom: 0;
+  width: var(--char-w);
+  height: var(--char-h);
+  transform: translate3d(
+    calc(-50% + var(--mx) * -14px),
+    calc(var(--my) * -8px + var(--sy) * 0.1px),
+    0
+  );
+  pointer-events: none;
+  will-change: transform;
+}
+
+.character__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  mix-blend-mode: multiply; /* white image backgrounds melt into the white page */
+  user-select: none;
+}
+
+/* Base layer: your portrait, always visible, never animated. */
+.character__img--base {
+  opacity: 1;
+}
+
+/* Reveal layer: Spider-Man mask, shown as a translucent overlay inside a soft circle
+   around the cursor, so the face underneath stays clearly visible.
+   The circle's centre (--cx/--cy) and strength (--rv) are updated from Hero.jsx. */
+.character__reveal {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: normal; /* no multiply here: it darkened the face */
+  opacity: calc(var(--rv) * var(--reveal-opacity));
+  -webkit-mask-image: radial-gradient(
+    circle calc(var(--reveal-r) * (0.75 + 0.45 * var(--rv))) at calc(var(--cx) * 1px) calc(var(--cy) * 1px),
+    #000 0%,
+    rgba(0, 0, 0, 0.9) 50%,
+    rgba(0, 0, 0, 0.45) 82%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    circle calc(var(--reveal-r) * (0.75 + 0.55 * var(--rv))) at calc(var(--cx) * 1px) calc(var(--cy) * 1px),
+    #000 0%,
+    rgba(0, 0, 0, 0.9) 50%,
+    rgba(0, 0, 0, 0.45) 82%,
+    transparent 100%
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  pointer-events: none;
+  will-change: mask-image, opacity;
+}
+
+.character__img--reveal {
+  mix-blend-mode: normal;
+  transform: translate(var(--face-x), var(--face-y)) scale(var(--face-scale-x), var(--face-scale-y));
+  transform-origin: var(--face-origin);
+}
+
+/* ---------------------------------- INTRO ----------------------------------- */
+.intro {
+  position: absolute;
+  z-index: 3;
+  left: var(--pad-x);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: min(50vw, 760px);
+}
+
+.intro__label {
+  margin: 0 0 clamp(10px, 1.1vw, 20px);
+  font-size: clamp(0.66rem, 0.88vw, 1.05rem);
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  line-height: 1.3;
+  white-space: nowrap;
+  color: var(--red-dark);
+  animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i) * 0.14s + 0.1s);
+}
+
+/* ---- NAME: one line, heavy Outfit title with soft pink offset shadow ----
+   Tune the size with --title-size (sized in vw so it fits left of the Spider-Man image). */
+.intro__title {
+  --title-size: clamp(2.4rem, 3.8vw, 4.8rem);
+  margin: 0 0 clamp(22px, 2.4vw, 46px);
+  padding: 0;
+  display: block;
+  font-family: var(--font-name);
+  font-weight: 9200px;
+  font-style: normal;
+  font-size: 46px;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--name-ink);
+}
+
+.intro__line {
+  display: block;
+  width: fit-content;
+  padding-right: 0.1em;
+  text-shadow: 0.06em 0.06em 0 var(--name-shadow);
+  animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i) * 0.14s + 0.1s);
+}
+
+.intro__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(10px, 1.1vw, 22px);
+  animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i) * 0.14s + 0.1s);
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --------------------------------- BUTTONS ---------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55em;
+  height: clamp(40px, 2.9vw, 58px);
+  padding: 0 clamp(18px, 1.7vw, 34px);
+  border: 0;
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: clamp(0.7rem, 0.82vw, 1rem);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: var(--white);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+.btn--red {
+  background: var(--btn-red);
+}
+
+.btn--red:hover {
+  transform: translateY(-3px);
+  background: var(--red);
+  box-shadow: 0 10px 22px rgba(215, 25, 32, 0.4);
+}
+
+.btn--dark {
+  background: var(--navy);
+}
+
+.btn--dark:hover {
+  transform: translateY(-3px);
+  background: #1c2140;
+  box-shadow: 0 10px 22px rgba(16, 19, 35, 0.35);
+}
+
+.btn:active {
+  transform: translateY(-1px);
+}
+
+/* -------------------------------- RESPONSIVE -------------------------------- */
+@media (max-width: 1024px) {
+  .nav {
+    padding: 0 32px;
+  }
+
+  .character {
+    --char-w: min(110vw, 900px);
+    --char-h: 92vh;
+  }
+
+  .hero {
+    --reveal-r: clamp(110px, 18vw, 190px);
+  }
+
+  .intro {
+    max-width: 52vw;
+  }
+
+  .intro__title {
+    --title-size: clamp(1.3rem, 2.6vw, 2.2rem);
+  }
+
+  .intro__label {
+    white-space: normal;
+    font-size: 0.7rem;
+  }
+}
+
+/* ================================ MOBILE ==================================== */
+/* Spider-Man fills the whole screen, text + buttons sit on top of it,
+   name wraps on two lines in heavy italic with a red shadow. */
+@media (max-width: 768px) {
+  .hero {
+    height: 100svh;
+    min-height: 600px;
+    --reveal-r: 150px;      /* touch circle size */
+    --reveal-opacity: 0.75; /* your photo strength (0.3 faint - 1 solid) */
+
+    /* ---- Your photo size/position inside Spider-Man's face ----
+       Bigger scale = bigger face. Start at 1.7 (same as desktop) and adjust. */
+    --face-scale-x: 1.7;
+    --face-scale-y: 1.7;
+    --face-x: 2%;   /* - = move left,  + = move right */
+    --face-y: -1%;  /* - = move up,    + = move down  */
+    --face-origin: 52% 50%;
+  }
+
+  /* --- Spider-Man fills the whole screen (width AND height) --- */
+  .character {
+    --char-w: 100vw;
+    --char-h: 100svh;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    height: 100svh;
+  }
+
+  .character__img {
+    object-fit: cover;           /* fill the full screen instead of shrinking */
+    object-position: center top; /* keep the head at the top, shoulders at the bottom */
+  }
+
+  /* Your photo (reveal layer) must match Spider-Man's face size.
+     Tune these 4 values in the mobile .hero block above:
+     --face-scale-x / --face-scale-y = size, --face-x / --face-y = position */
+  .character__img--reveal {
+    object-fit: cover;
+    object-position: center top;
+    transform: translate(var(--face-x), var(--face-y)) scale(var(--face-scale-x), var(--face-scale-y));
+    transform-origin: var(--face-origin);
+  }
+
+  /* --- Text block sits in the middle of the face --- */
+  .intro {
+    top: 39%;
+    left: 24px;
+    transform: none;
+    max-width: calc(100vw - 48px);
+  }
+
+  .intro__label {
+    margin: 0 0 14px;
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    line-height: 1.4;
+    white-space: normal;
+    color: var(--red-dark);
+  }
+
+  /* Name on two lines, italic, red 3D shadow */
+  .intro__title {
+    --name-shadow: #e8313a;
+    margin: 0 0 22px;
+    font-size: clamp(2.2rem, 10.5vw, 3.6rem);
+    font-style: italic;
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+    white-space: normal;
+  }
+
+  .intro__line {
+    width: auto;
+    max-width: 100%;
+    text-shadow: 0.05em 0.05em 0 var(--name-shadow);
+  }
+
+  /* Buttons stacked, one under the other */
+  .intro__actions {
+    flex-direction: column;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    gap: 16px;
+  }
+
+  .btn {
+    height: 54px;
+    padding: 0 28px;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+    border-radius: 10px;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.22);
+  }
+
+  .btn--red {
+    min-width: min(46vw, 230px);
+  }
+
+  /* --- Webs: big one top-left, dark one over the bottom-right shoulder --- */
+  .webs {
+    z-index: 2; /* webs lie over the face */
+  }
+
+  .web-wrap--tl {
+    width: 210px;
+    left: -70px;
+    top: -30px;
+  }
+
+  .web-wrap--br {
+    width: 230px;
+    right: -60px;
+    bottom: 7vh;
+    color: #2b2b2b;
+  }
+
+  .web-wrap--r {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .nav {
+    padding: 0 20px;
+  }
+
+  .nav__toggle {
+    display: inline-flex;
+    position: relative;
+    z-index: 2;
+    color: #9a9aa3; /* soft grey hamburger */
+  }
+
+  .nav__links {
+    position: absolute;
+    top: var(--nav-h);
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    padding: 8px 24px 16px;
+    background: var(--white);
+    border-bottom: 1px solid var(--gray);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+  }
+
+  .nav__links.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .nav__links li {
+    width: 100%;
+  }
+
+  .nav__link {
+    width: 100%;
+    padding: 14px 0;
+    font-size: 0.8rem;
+  }
+
+  .nav__link::after {
+    bottom: 8px;
+    width: 28px;
+  }
+}
+
+@media (max-width: 380px) {
+  .intro__title {
+    font-size: clamp(2rem, 10vw, 2.6rem);
+  }
+}
+
+/* ---------------------------- REDUCED MOTION ------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .web,
+  .intro__label,
+  .intro__line,
+  .intro__actions {
+    animation: none !important;
+  }
+
+  .btn,
+  .nav__link::after,
+  .logo__mark {
+    transition-duration: 0.01ms !important;
+  }
+
+  .character {
+    transform: translate3d(-50%, 0, 0);
+  }
+
+  .web-wrap--tl,
+  .web-wrap--br,
+  .web-wrap--r {
+    transform: none;
+  }
+}
